@@ -49,7 +49,7 @@ class _LoginScreen extends State<LoginScreen> {
               padding:
                   const EdgeInsets.only(top: 32.0, right: 16.0, left: 16.0),
               child: Text(
-                'Sign In',
+                'Iniciar Sesión',
                 style: TextStyle(
                     color: Color(Constants.COLOR_PRIMARY),
                     fontSize: 25.0,
@@ -78,7 +78,7 @@ class _LoginScreen extends State<LoginScreen> {
                         contentPadding:
                             new EdgeInsets.only(left: 16, right: 16),
                         fillColor: Colors.white,
-                        hintText: 'E-mail Address',
+                        hintText: 'Correo electrónico',
                         focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25.0),
                             borderSide: BorderSide(
@@ -129,7 +129,7 @@ class _LoginScreen extends State<LoginScreen> {
                 child: RaisedButton(
                   color: Color(Constants.COLOR_PRIMARY),
                   child: Text(
-                    'Log In',
+                    'Iniciar Sesión',
                     style:
                         TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
@@ -151,7 +151,7 @@ class _LoginScreen extends State<LoginScreen> {
               padding: const EdgeInsets.all(32.0),
               child: Center(
                 child: Text(
-                  'OR',
+                  'O',
                   style: TextStyle(color: Colors.black),
                 ),
               ),
@@ -225,7 +225,7 @@ class _LoginScreen extends State<LoginScreen> {
   onClick(String email, String password) async {
     if (_key.currentState.validate()) {
       _key.currentState.save();
-      showProgress(context, 'Logging in, please wait...', false);
+      showProgress(context, 'Iniciando sesión, espere por favor...', false);
       User user =
           await loginWithUserNameAndPassword(email.trim(), password.trim());
       if (user != null)
@@ -260,26 +260,26 @@ class _LoginScreen extends State<LoginScreen> {
       switch ((exception as PlatformException).code) {
         case 'ERROR_INVALID_EMAIL':
           showAlertDialog(
-              context, 'Couldn\'t Authinticate', 'email address is malformed');
+              context, 'No se pudo autenticar', 'email incorrecto');
           break;
         case 'ERROR_WRONG_PASSWORD':
-          showAlertDialog(context, 'Couldn\'t Authinticate', 'wrong password');
+          showAlertDialog(context, 'No se pudo autenticar', 'password incorrecto');
           break;
         case 'ERROR_USER_NOT_FOUND':
-          showAlertDialog(context, 'Couldn\'t Authinticate',
-              'no user corresponding to the given email address');
+          showAlertDialog(context, 'No se pudo autenticar',
+              'no hay una cuenta para ese email');
           break;
         case 'ERROR_USER_DISABLED':
           showAlertDialog(
-              context, 'Couldn\'t Authinticate', 'user has been disabled');
+              context, 'No se pudo autenticar', 'el usuario fue deshabilitado');
           break;
         case 'ERROR_TOO_MANY_REQUESTS':
-          showAlertDialog(context, 'Couldn\'t Authinticate',
-              'too many attempts to sign in as this user');
+          showAlertDialog(context, 'No se pudo autenticar',
+              'se excedieron los intentos permitidos de inicio de sesión');
           break;
         case 'ERROR_OPERATION_NOT_ALLOWED':
-          showAlertDialog(context, 'Couldn\'t Authinticate',
-              'Email & Password accounts are not enabled');
+          showAlertDialog(context, 'No se pudo autenticar',
+              'Email y password no habilitados');
           break;
       }
       print(exception.toString());

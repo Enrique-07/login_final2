@@ -17,14 +17,14 @@ class AuthScreen extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(top: 70.0, bottom: 20.0),
                 child: Icon(
-                  Icons.phone_iphone,
+                  Icons.star,
                   size: 150,
                   color: Color(Constants.COLOR_PRIMARY),
                 ),
               ),
             ),
             Text(
-              'Say Hello To Your New App!',
+              'Bienvenido a ___!',
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: Color(Constants.COLOR_PRIMARY),
@@ -34,7 +34,7 @@ class AuthScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                'You\'ve just saved a week of development and headaches.',
+                'Ahorrar nunca fue tan fácil',
                 style: TextStyle(fontSize: 18),
                 textAlign: TextAlign.center,
               ),
@@ -46,7 +46,7 @@ class AuthScreen extends StatelessWidget {
                 child: RaisedButton(
                   color: Color(Constants.COLOR_PRIMARY),
                   child: Text(
-                    'Log In',
+                    'Iniciar Sesión',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   textColor: Colors.white,
@@ -68,7 +68,7 @@ class AuthScreen extends StatelessWidget {
                 child: FlatButton(
                   textColor: Colors.black54,
                   child: Text(
-                    'Sign Up',
+                    'Registrarse',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   onPressed: () {

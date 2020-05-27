@@ -111,7 +111,7 @@ class _SignUpState extends State<SignUpScreen> {
         new Align(
             alignment: Alignment.topLeft,
             child: Text(
-              'Create new account',
+              'Crear cuenta nueva',
               style: TextStyle(
                   color: Color(Constants.COLOR_PRIMARY),
                   fontWeight: FontWeight.bold,
@@ -170,7 +170,7 @@ class _SignUpState extends State<SignUpScreen> {
                         contentPadding: new EdgeInsets.symmetric(
                             vertical: 8, horizontal: 16),
                         fillColor: Colors.white,
-                        hintText: 'First Name',
+                        hintText: 'Nombre',
                         focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25.0),
                             borderSide: BorderSide(
@@ -195,7 +195,7 @@ class _SignUpState extends State<SignUpScreen> {
                         contentPadding: new EdgeInsets.symmetric(
                             vertical: 8, horizontal: 16),
                         fillColor: Colors.white,
-                        hintText: 'Last Name',
+                        hintText: 'Apellido',
                         focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25.0),
                             borderSide: BorderSide(
@@ -221,7 +221,7 @@ class _SignUpState extends State<SignUpScreen> {
                         contentPadding: new EdgeInsets.symmetric(
                             vertical: 8, horizontal: 16),
                         fillColor: Colors.white,
-                        hintText: 'Mobile Number',
+                        hintText: 'Número de celular',
                         focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25.0),
                             borderSide: BorderSide(
@@ -247,7 +247,7 @@ class _SignUpState extends State<SignUpScreen> {
                         contentPadding: new EdgeInsets.symmetric(
                             vertical: 8, horizontal: 16),
                         fillColor: Colors.white,
-                        hintText: 'Email Address',
+                        hintText: 'Email',
                         focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25.0),
                             borderSide: BorderSide(
@@ -306,7 +306,7 @@ class _SignUpState extends State<SignUpScreen> {
                     contentPadding:
                     new EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     fillColor: Colors.white,
-                    hintText: 'Confirm Password',
+                    hintText: 'Confirmar Password',
                     focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25.0),
                         borderSide: BorderSide(
@@ -323,7 +323,7 @@ class _SignUpState extends State<SignUpScreen> {
             child: RaisedButton(
               color: Color(Constants.COLOR_PRIMARY),
               child: Text(
-                'Sign Up',
+                'Registrarse',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               textColor: Colors.white,
@@ -343,13 +343,13 @@ class _SignUpState extends State<SignUpScreen> {
   _sendToServer() async {
     if (_key.currentState.validate()) {
       _key.currentState.save();
-      showProgress(context, 'Creating new account, Please wait...', false);
+      showProgress(context, 'Creando nueva cuenta, Espere por favor...', false);
       var profilePicUrl = '';
       try {
         AuthResult result = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: email, password: password);
         if (_image != null) {
-          updateProgress('Uploading image, Please wait...');
+          updateProgress('Subiendo imagen, Espere por favor...');
           profilePicUrl = await FireStoreUtils()
               .uploadUserImageToFireStorage(_image, result.user.uid);
         }
@@ -372,9 +372,9 @@ class _SignUpState extends State<SignUpScreen> {
       } catch (error) {
         hideProgress();
         (error as PlatformException).code != 'ERROR_EMAIL_ALREADY_IN_USE'
-            ? showAlertDialog(context, 'Failed', 'Couldn\'t sign up')
+            ? showAlertDialog(context, 'Failed', 'No se pudo registrar la cuenta')
             : showAlertDialog(context, 'Failed',
-            'Email already in use, Please pick another email!');
+            'Ya hay una cuenta con ese emal, Por favor ingrese otro!');
         print(error.toString());
       }
     } else {

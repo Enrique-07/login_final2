@@ -9,21 +9,21 @@ import '../auth/AuthScreen.dart';
 final _currentPageNotifier = ValueNotifier<int>(0);
 
 final List<String> _titlesList = [
-  'Flutter Onboarding',
-  'Firebase Auth',
-  'Facebook Login'
+  'Seguimiento de Gastos',
+  'Presupuestos',
+  'Estadísticas'
 ];
 
 final List<String> _subtitlesList = [
-  'Build your onboarding flow in seconds.',
-  'Use Firebase for user managements.',
-  'Leaverage Facebook to log in user easily.'
+  'Tendrás tus gastos diarios a tu alcance.',
+  'Limita tus gastos, ahorra más.',
+  'Reportes gráficos de cómo manejas tu dinero.'
 ];
 
 final List<IconData> _imageList = [
-  Icons.developer_mode,
-  Icons.layers,
-  Icons.account_circle
+  Icons.list,
+  Icons.monetization_on,
+  Icons.pie_chart
 ];
 final List<Widget> _pages = [];
 
@@ -100,13 +100,13 @@ Widget getLastPage(BuildContext context) {
               Padding(
                 padding: const EdgeInsets.all(40.0),
                 child: new Icon(
-                  Icons.code,
+                  Icons.local_atm,
                   color: Colors.white,
                   size: 120,
                 ),
               ),
               Text(
-                'Jump straight into the action.',
+                'Toma el control de tus finanzas.',
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 20.0,
@@ -120,7 +120,7 @@ Widget getLastPage(BuildContext context) {
                       pushReplacement(context, new AuthScreen());
                     },
                     child: Text(
-                      "Get Started",
+                      "Comenzar",
                       style: TextStyle(
                           fontSize: 20.0,
                           color: Colors.white,

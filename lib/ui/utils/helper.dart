@@ -9,9 +9,9 @@ String validateName(String value) {
   String patttern = r'(^[a-zA-Z ]*$)';
   RegExp regExp = new RegExp(patttern);
   if (value.length == 0) {
-    return "Name is Required";
+    return "Debe proporcionar un nombre";
   } else if (!regExp.hasMatch(value)) {
-    return "Name must be a-z and A-Z";
+    return "El nombre debe tener sólo letras (a-z, A-Z)";
   }
   return null;
 }
@@ -20,16 +20,16 @@ String validateMobile(String value) {
   String patttern = r'(^[0-9]*$)';
   RegExp regExp = new RegExp(patttern);
   if (value.length == 0) {
-    return "Mobile is Required";
+    return "Debe proporcionar su número de celular";
   } else if (!regExp.hasMatch(value)) {
-    return "Mobile Number must be digits";
+    return "El número de celular debe tener sólo números";
   }
   return null;
 }
 
 String validatePassword(String value) {
   if (value.length < 6)
-    return 'Password must be more than 5 charater';
+    return 'Su contraseña debe tener más de 5 caracteres';
   else
     return null;
 }
@@ -39,7 +39,7 @@ String validateEmail(String value) {
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
   RegExp regex = new RegExp(pattern);
   if (!regex.hasMatch(value))
-    return 'Enter Valid Email';
+    return 'Ingrese un email válido';
   else
     return null;
 }
@@ -47,9 +47,9 @@ String validateEmail(String value) {
 String validateConfirmPassword(String password, String confirmPassword) {
   print("$password $confirmPassword");
   if (password != confirmPassword) {
-    return 'Password doesn\'t match';
+    return 'Las contraseñas no coinciden';
   } else if (confirmPassword.length == 0) {
-    return 'Confirm password is required';
+    return 'Debe confirmar su contraseña';
   } else {
     return null;
   }

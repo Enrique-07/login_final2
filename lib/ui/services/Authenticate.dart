@@ -34,7 +34,7 @@ class FireStoreUtils {
       return user;
     }, onError: (e) {
       print(e);
-      showAlertDialog(context, 'Error', 'Failed to Update, Please try again.');
+      showAlertDialog(context, 'Error', 'No se pudo actualizar, por favor intente de nuevo.');
       return null;
     });
   }
