@@ -26,6 +26,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  google_sign_in: ^4.5.1
 
 
 flutter:

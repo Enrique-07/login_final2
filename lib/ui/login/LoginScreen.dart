@@ -16,6 +16,22 @@ import 'package:http/http.dart' as http;
 import '../../constants.dart' as Constants;
 import '../../main.dart';
 
+import 'dart:async';
+import 'dart:convert' show json;
+
+
+import 'package:firebase_auth/firebase_auth.dart';
+import "package:http/http.dart" as http;
+import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+GoogleSignIn _googleSignIn = GoogleSignIn(
+  scopes: <String>[
+    'email',
+    'https://www.googleapis.com/auth/contacts.readonly',
+  ],
+
+);
 final _fireStoreUtils = FireStoreUtils();
 
 class LoginScreen extends StatefulWidget {
@@ -31,6 +47,8 @@ class _LoginScreen extends State<LoginScreen> {
   GlobalKey<FormState> _key = new GlobalKey();
   bool _validate = false;
   String email, password;
+  GoogleSignInAccount _currentUser;
+  String _contactText;
 
   @override
   Widget build(BuildContext context) {
@@ -156,70 +174,47 @@ class _LoginScreen extends State<LoginScreen> {
                 ),
               ),
             ),
-            Padding(
-              padding:
-                  const EdgeInsets.only(right: 40.0, left: 40.0, bottom: 20),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minWidth: double.infinity),
-                child: RaisedButton.icon(
-                  label: Text(
-                    'Facebook Login',
-                    style:
-                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  icon: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Image.asset(
-                      'assets/images/facebook_logo.png',
-                      color: Colors.white,
-                      height: 30,
-                      width: 30,
-                    ),
-                  ),
-                  color: Color(Constants.FACEBOOK_BUTTON_COLOR),
-                  textColor: Colors.white,
-                  splashColor: Color(Constants.FACEBOOK_BUTTON_COLOR),
-                  onPressed: () async {
-                    final facebookLogin = FacebookLogin();
-                    final result = await facebookLogin.logIn(['email']);
-                    switch (result.status) {
-                      case FacebookLoginStatus.loggedIn:
-                        showProgress(
-                            context, 'Logging in, please wait...', false);
-                        await FirebaseAuth.instance
-                            .signInWithCredential(
-                                FacebookAuthProvider.getCredential(
-                                    accessToken: result.accessToken.token))
-                            .then((AuthResult authResult) async {
-                          User user = await _fireStoreUtils
-                              .getCurrentUser(authResult.user.uid);
-                          if (user == null) {
-                            _createUserFromFacebookLogin(
-                                result, authResult.user.uid);
-                          } else {
-                            _syncUserDataWithFacebookData(result, user);
-                          }
-                        });
-                        break;
-                      case FacebookLoginStatus.cancelledByUser:
-                        break;
-                      case FacebookLoginStatus.error:
-                        showAlertDialog(context, 'Error',
-                            'Couldn\'t login via facebook.');
-                        break;
-                    }
-                  },
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25.0),
-                      side: BorderSide(
-                          color: Color(Constants.FACEBOOK_BUTTON_COLOR))),
-                ),
-              ),
-            ),
+            _buildBody(),
           ],
         ),
       ),
     );
+  }
+  Widget _buildBody() {
+    if (_currentUser != null) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          ListTile(
+            leading: GoogleUserCircleAvatar(
+              identity: _currentUser,
+            ),
+            title: Text(_currentUser.displayName ?? ''),
+            subtitle: Text(_currentUser.email ?? ''),
+          ),
+          const Text("Signed in successfully."),
+          Text(_contactText ?? ''),
+          RaisedButton(
+            child: const Text('Cerrar sesión'),
+            onPressed: _handleSignOut,
+          ),
+          RaisedButton(
+            child: const Text('Actualizar'),
+            onPressed: _handleGetContact,
+          ),
+        ],
+      );
+    } else {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          RaisedButton(
+            child: const Text('Iniciar sesión con google'),
+            onPressed: _handleSignIn,
+          ),
+        ],
+      );
+    }
   }
 
   onClick(String email, String password) async {
@@ -235,6 +230,64 @@ class _LoginScreen extends State<LoginScreen> {
         _validate = true;
       });
     }
+  }
+
+  Future<void> _handleSignOut() async {
+    _googleSignIn.disconnect();
+  }
+
+  Future<void> _handleSignIn() async {
+    try {
+      await _googleSignIn.signIn();
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  Future<void> _handleGetContact() async {
+    setState(() {
+      _contactText = "Loading contact info...";
+    });
+    final http.Response response = await http.get(
+      'https://people.googleapis.com/v1/people/me/connections'
+          '?requestMask.includeField=person.names',
+      headers: await _currentUser.authHeaders,
+    );
+    if (response.statusCode != 200) {
+      setState(() {
+        _contactText = "People API gave a ${response.statusCode} "
+            "response. Check logs for details.";
+      });
+      print('People API ${response.statusCode} response: ${response.body}');
+      return;
+    }
+    final Map<String, dynamic> data = json.decode(response.body);
+    final String namedContact = _pickFirstNamedContact(data);
+    setState(() {
+      if (namedContact != null) {
+        _contactText = "I see you know $namedContact!";
+      } else {
+        _contactText = "No contacts to display.";
+      }
+    });
+  }
+
+  String _pickFirstNamedContact(Map<String, dynamic> data) {
+    final List<dynamic> connections = data['connections'];
+    final Map<String, dynamic> contact = connections?.firstWhere(
+          (dynamic contact) => contact['names'] != null,
+      orElse: () => null,
+    );
+    if (contact != null) {
+      final Map<String, dynamic> name = contact['names'].firstWhere(
+            (dynamic name) => name['displayName'] != null,
+        orElse: () => null,
+      );
+      if (name != null) {
+        return name['displayName'];
+      }
+    }
+    return null;
   }
 
   Future<User> loginWithUserNameAndPassword(
@@ -292,46 +345,5 @@ class _LoginScreen extends State<LoginScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
-  }
-
-  void _createUserFromFacebookLogin(
-      FacebookLoginResult result, String userID) async {
-    final token = result.accessToken.token;
-    final graphResponse = await http.get('https://graph.facebook.com/v2'
-        '.12/me?fields=name,first_name,last_name,email,picture.type(large)&access_token=$token');
-    final profile = json.decode(graphResponse.body);
-    User user = User(
-        firstName: profile['first_name'],
-        lastName: profile['last_name'],
-        email: profile['email'],
-        profilePictureURL: profile['picture']['data']['url'],
-        active: true,
-        userID: userID);
-    await FireStoreUtils.firestore
-        .collection(Constants.USERS)
-        .document(userID)
-        .setData(user.toJson())
-        .then((onValue) {
-      MyAppState.currentUser = user;
-      hideProgress();
-      pushAndRemoveUntil(context, HomeScreen(user: user), false);
-    });
-  }
-
-  void _syncUserDataWithFacebookData(
-      FacebookLoginResult result, User user) async {
-    final token = result.accessToken.token;
-    final graphResponse = await http.get('https://graph.facebook.com/v2'
-        '.12/me?fields=name,first_name,last_name,email,picture.type(large)&access_token=$token');
-    final profile = json.decode(graphResponse.body);
-    user.profilePictureURL = profile['picture']['data']['url'];
-    user.firstName = profile['first_name'];
-    user.lastName = profile['last_name'];
-    user.email = profile['email'];
-    user.active = true;
-    await _fireStoreUtils.updateCurrentUser(user, context);
-    MyAppState.currentUser = user;
-    hideProgress();
-    pushAndRemoveUntil(context, HomeScreen(user: user), false);
   }
 }
