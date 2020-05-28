@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_login_screen/constants.dart';
 import 'package:flutter_login_screen/model/User.dart';
 import 'package:flutter_login_screen/ui/auth/AuthScreen.dart';
+import 'package:flutter_login_screen/ui/home/add_page.dart';
+import 'package:flutter_login_screen/ui/home/home_page.dart';
 import 'package:flutter_login_screen/ui/services/Authenticate.dart';
 import 'package:flutter_login_screen/ui/utils/helper.dart';
 
@@ -61,6 +63,20 @@ class _HomeState extends State<HomeScreen> {
                 await FirebaseAuth.instance.signOut();
                 MyAppState.currentUser = null;
                 pushAndRemoveUntil(context, AuthScreen(), false);
+              },
+            ),
+            ListTile(
+              title: Text(
+                'Gastos',
+                style: TextStyle(color: Colors.black),
+              ),
+              leading: Transform.rotate(
+                  angle: pi/1,
+                  child: Icon(Icons.monetization_on, color: Colors.black)),
+              onTap: () async {
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) =>HomePage(),
+                ));
               },
             ),
           ],

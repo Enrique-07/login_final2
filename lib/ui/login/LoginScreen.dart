@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_login_screen/model/User.dart';
 import 'package:flutter_login_screen/ui/home/HomeScreen.dart';
 import 'package:flutter_login_screen/ui/services/Authenticate.dart';
@@ -19,10 +18,6 @@ import '../../main.dart';
 import 'dart:async';
 import 'dart:convert' show json;
 
-
-import 'package:firebase_auth/firebase_auth.dart';
-import "package:http/http.dart" as http;
-import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
